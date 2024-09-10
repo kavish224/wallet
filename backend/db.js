@@ -49,9 +49,9 @@ const accountSchema = mongoose.Schema({
 //     next()
 // })
 
-// userSchema.methods.isPasswordCorrect = async function (password) {
-//     return await bcrypt.compare(password, this.password)
-// }
+userSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password)
+}
 const User = mongoose.model("User", userSchema);
 const Account = mongoose.model("Account", accountSchema);
 

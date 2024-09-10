@@ -61,14 +61,19 @@ router.post("/signin", async (req, res) => {
     const { success } = signinSchema.safeParse(req.body)
     if (!success) {
         return res.status(411).json({
-            message: "Email already taken / Incorrect inputs"
+            message: "Incorrect inputs"
         })
     }
     const user = await User.findOne({
-        username: req.body.username,
-        password: req.body.password
+        username: req.body.username
     });
-    if (user) {
+    if (!user) {
+        return res.json({
+            message: "user not found"
+        })
+    }
+    const isPasswordValid = await user.isPasswordCorrect(req.body.password);
+    if (isPasswordValid) {
         const token = jwt.sign({
             userId: user._id
         }, JWT_SECRET);
@@ -97,7 +102,7 @@ router.post ("/",authMiddleware, async(req,res) => {
     })
 })
 router.post ("/bulk", async(req, res) => {
-    const body = req.query.filter || "";
+    const filter = req.query.filter || "";
     const users = await User.find({
         $or: [{
             firstname: {
