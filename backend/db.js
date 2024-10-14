@@ -42,12 +42,24 @@ const accountSchema = mongoose.Schema({
         required: true
     }
 });
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
+userSchema.pre('save', function (next) {
+    if (this.firstname) {
+      this.firstname = capitalizeFirstLetter(this.firstname);
+    }
+    if (this.lastname) {
+      this.lastname = capitalizeFirstLetter(this.lastname);
+    }
+    next();
+});
 
-// userSchema.pre("save", async function (next) {
-//     if (!this.isModified("password")) return next();
-//     this.password = await bcrypt.hash(this.password, 10)
-//     next()
-// })
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
+})
 
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
