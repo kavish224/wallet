@@ -11,8 +11,9 @@ router.get("/balance",authMiddleware, async(req, res) => {
     const account = await Account.findOne({
         userId: req.userId
     });
+    const balance = account.balance
     return res.json({
-        balance: account.balance
+        balance
     })
 });
 
@@ -45,6 +46,11 @@ router.post("/transfer",authMiddleware, async(req, res) => {
     await session.commitTransaction();
     res.json({
         message: "transfer successful"
+    })
+})
+router.get("/accno", authMiddleware, async(req, res) => {
+    return res.json({
+        acc: req.userId
     })
 })
 module.exports = router;
