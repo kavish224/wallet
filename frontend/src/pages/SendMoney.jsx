@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from 'axios'
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import Appbar from "../components/Appbar";
 
 export const SendMoney = () => {
@@ -8,6 +8,18 @@ export const SendMoney = () => {
     const id = searchParams.get("id");
     const name = searchParams.get("name");
     const [amount, setAmount] = React.useState(0);
+    const [acc, setAcc] = React.useState("")
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+    useEffect(()=>{
+        const accno = async() => {
+            const resp = await axios.get("http://localhost:3000/api/v1/account/accno", 
+                {headers: {"Authorization" : `Bearer ${token}`}
+            })
+            setAcc(resp.data.acc)
+        }
+        accno()
+    },[])
     return <>
     <Appbar/>
     <div class="flex justify-center min-h-screen pt-20 bg-gray-100">
@@ -24,6 +36,9 @@ export const SendMoney = () => {
                     <span class="text-2xl text-white">{name[0].toUpperCase()}</span>
                     </div>
                     <h3 class="text-2xl font-semibold">{name}</h3>
+                </div>
+                <div className="pt-2 pb-1">
+                    Wallet Id: {acc}
                 </div>
                 <div class="space-y-4">
                     <div class="space-y-2">
@@ -42,7 +57,7 @@ export const SendMoney = () => {
                     />
                     </div>
                     <button onClick={(e)=>{
-                        axios.post("http://localhost:3000/api/v1/account/transfer",{
+                        const response = axios.post("http://localhost:3000/api/v1/account/transfer",{
                             to: id,
                             amount
                         },{
@@ -50,6 +65,9 @@ export const SendMoney = () => {
                                 Authorization: "Bearer " + localStorage.getItem("token")
                             }
                         })
+                        if (response) {
+                            navigate("/confirmation?name=" + name + "&amount=" + amount)
+                        }
                     }}class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-gray-800 text-white">
                         Initiate Transfer
                     </button>

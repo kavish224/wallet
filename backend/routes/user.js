@@ -87,7 +87,15 @@ router.post("/signin", async (req, res) => {
         message: "Error while logging in"
     })
 })
+router.get("/username", authMiddleware, async(req, res)=>{
 
+    const user = await User.findOne({
+        _id: req.userId
+    })
+    return res.json({
+        user: user.firstname +" "+ user.lastname
+    })
+})
 router.post ("/",authMiddleware, async(req,res) => {
     const body = req.body;
     const {success} = updateSchema.safeParse(body);
