@@ -10,12 +10,12 @@ export const Dashboard = () => {
     useEffect(() => {
         const bal = async() => {
             const token = localStorage.getItem("token");    
-            const baln = await axios.get("http://localhost:3000/api/v1/account/balance",{headers: {"Authorization" : `Bearer ${token}`}});
+            const baln = await axios.get("https://walletapi.kavishambani.in/api/v1/account/balance",{headers: {"Authorization" : `Bearer ${token}`}});
             setBalance(baln.data.balance);
         }
         const username = async() => {
             const token = localStorage.getItem("token");    
-            const usr = await axios.get("http://localhost:3000/api/v1/user/username",{headers: {"Authorization" : `Bearer ${token}`}});
+            const usr = await axios.get("https://walletapi.kavishambani.in/api/v1/user/username",{headers: {"Authorization" : `Bearer ${token}`}});
             setUse(usr.data.user)
         }
         bal()
