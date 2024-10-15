@@ -23,19 +23,19 @@ const updateSchema = zod.object({
 })
 
 router.post("/signup", async (req, res) => {
-    const {success} = signupSchema.safeParse(req.body);
-    if (!success) {
-        return res.json({
-            message: "incorrect inputs"
-        })
+    const parsed = signupSchema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({
+            message: "Incorrect inputs",
+            errors: parsed.error.format()
+        });
     }
-    const existingUser = await User.findOne({
-        username: req.body.username
-    })
+
+    const existingUser = await User.findOne({ username: req.body.username });
     if (existingUser) {
-        return res.status(411).json({
-            message: "user already exists"
-        })
+        return res.status(409).json({
+            message: "User already exists"
+        });
     }
     const user =  await User.create({
         username: req.body.username,
@@ -58,19 +58,20 @@ router.post("/signup", async (req, res) => {
 })
 
 router.post("/signin", async (req, res) => {
-    const { success } = signinSchema.safeParse(req.body)
-    if (!success) {
-        return res.status(411).json({
-            message: "Incorrect inputs"
-        })
+    const parsed = signinSchema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({
+            message: "Incorrect inputs",
+            errors: parsed.error.format()
+        });
     }
     const user = await User.findOne({
         username: req.body.username
     });
     if (!user) {
-        return res.json({
-            message: "user not found"
-        })
+        return res.status(404).json({
+            message: "User not found"
+        });
     }
     const isPasswordValid = await user.isPasswordCorrect(req.body.password);
     if (isPasswordValid) {
@@ -97,12 +98,12 @@ router.get("/username", authMiddleware, async(req, res)=>{
     })
 })
 router.post ("/",authMiddleware, async(req,res) => {
-    const body = req.body;
-    const {success} = updateSchema.safeParse(body);
-    if (!success) {
-        res.status(411).json({
-            message: "error while update"
-        })
+    const parsed = updateSchema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({
+            message: "Error while updating",
+            errors: parsed.error.format()
+        });
     }
     await User.updateOne({ _id: req.userId }, req.body);
     res.json({
