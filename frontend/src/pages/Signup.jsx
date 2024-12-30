@@ -27,7 +27,7 @@ export const Signup = () => {
                     <InputBox onChange={(e)=>setPassword(e.target.value)} placeholder={"********"} label={"Password"}/>
                     <div className="pt-4">
                         <Button label={"Sign up"} onClick={async() => {
-                            const response = await axios.post("https://walletapi.kavishambani.in/api/v1/user/signup", {
+                            const response = await axios.post("https://wallet.kavishambani.in/api/v1/user/signup", {
                                 firstname,
                                 lastname,
                                 username,

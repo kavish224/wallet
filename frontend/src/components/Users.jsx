@@ -8,7 +8,7 @@ function Users() {
     const [users, setUsers] = React.useState([]);
     const [filter, setFilter] = React.useState("");
     useEffect(() => {
-        axios.post("https://walletapi.kavishambani.in/api/v1/user/bulk?filter="+filter)
+        axios.post("https://wallet.kavishambani.in/api/v1/user/bulk?filter="+filter)
             .then((res)=>setUsers(res.data.user))
     }, [filter])
     return (

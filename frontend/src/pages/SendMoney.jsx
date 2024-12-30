@@ -13,7 +13,7 @@ export const SendMoney = () => {
     const token = localStorage.getItem("token");
     useEffect(()=>{
         const accno = async() => {
-            const resp = await axios.get("https://walletapi.kavishambani.in/api/v1/account/accno", 
+            const resp = await axios.get("https://wallet.kavishambani.in/api/v1/account/accno", 
                 {headers: {"Authorization" : `Bearer ${token}`}
             })
             setAcc(resp.data.acc)
@@ -57,7 +57,7 @@ export const SendMoney = () => {
                     />
                     </div>
                     <button onClick={(e)=>{
-                        const response = axios.post("https://walletapi.kavishambani.in/api/v1/account/transfer",{
+                        const response = axios.post("https://wallet.kavishambani.in/api/v1/account/transfer",{
                             to: id,
                             amount
                         },{
